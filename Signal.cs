@@ -24,13 +24,6 @@ namespace ffteq
             {
                 return Data.Length;
             }
-
-            private set
-            {
-                throw new ApplicationException(
-                    "Tried to set a get-only property"
-                );
-            }
         }
 
         public Signal(double[] data, int sampleRate)

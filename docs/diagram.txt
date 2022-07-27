@@ -1,0 +1,75 @@
+         ┌─────────────────────────────────────┐
+         │class CMDOptionDouble : CMDOptionArg │                          ┌──────────────────────────────────────────────┐        ┌───────────────────────────────────┐
+         ├─────────────────────────────────────┤                          │class FFTFilter : Effect                      │        │class FFT                          │
+         │new(string name, string description) │                          ├──────────────────────────────────────────────┤        ├───────────────────────────────────┤
+         └───────────────────────┬─────────────┘                          │new(bool lowPass, double hzFrom, double hzTo) │        │static Complex[] DoFFT(Complex[])  │
+                                 │                                        └───────────────────────────┬──────────────────┘        │static Complex[] DoIFFT(Complex[]) │
+                                 │                                                                    │                           └───────────────────────────────────┘
+                                 │                                        ┌────────────────────┐      │
+               ┌─────────────────┴─────────────┐                          │class Gain : Effect │      │
+               │abstract class CMDOptionArg    │                          ├────────────────────┤      │
+               ├───────────────────────────────┤                          │new(double db)      │      │
+               │abstract string Name;          │                          └─────────────┬──────┘      │
+               │abstract string Description;   │                                        │             │
+               │                               │                          ┌─────────────┴─────────────┴─────┐     ┌────────────────────────┐
+               │abstract bool Validate(String) │                          │abstract class Effect            │     │class Clipping : Effect │
+               └─────────────────────┬─────────┘                          ├─────────────────────────────────┤     ├────────────────────────┤
+                                     │           ┌────────────────────────┤abstract Signal Process(Signal)  ├─────┤                        │
+                                     │           │                        └─────────────────────────────────┘     └────────────────────────┘
+                                     │           │
+                                     │           │
+                                     ▼           ▼
+     ┌───────────────────────────────────────────────┐
+     │abstract class CMDOption                       │
+     ├───────────────────────────────────────────────┤
+     │abstract string Name;                          │
+     │abstract string Description;                   │                                                                          ┌──────────────────────────────────────────────┐
+     │abstract CMDOptionArg[] Args;                  ├───────────────────────┐                                                  │class Signal                                  │
+     │                                               │                       │                                                  ├──────────────────────────────────────────────┤
+     │abstract Signal Execute(Signal, string[] args) │                       │                                                  │double[] Data;                                │
+     └────────────────────────────────────────┬──────┘                       │                                                  │double this[int];                             │
+                                              │  ▲                           │                                                  │int SampleRate;                               │
+  ┌────────────────────────────────────────┐  │  │                           │                                                  │int SampleNum;                                │
+  │class CMDOptionFilterLow : CMDOption    ├──┤  │                           │                                                  │                                              │
+  ├────────────────────────────────────────┤  │  │                           │                                                  │new(double[] data, int sampleRate)            │
+  │                                        │  │  │                           │                                                  │new(int length, int sampleRate)               │
+  └────────────────────────────────────────┘  │  │                           ▼                                                  │                                              │
+                                              │  │                      ┌─────────────────────────────────────┐                 │Signal Subsignal(int startIndex, int length)  │
+  ┌──────────────────────────────────────┐    │  │                      │class Program                        │                 └──────────────────────────────────────────────┘
+  │class CMDOptionFilterHigh : CMDOption ├────┤  │                      ├─────────────────────────────────────┤
+  ├──────────────────────────────────────┤    │  │                      │static int Main()                    │
+  │                                      │    │  │                      │                                     │
+  └──────────────────────────────────────┘    │  │                      │                                     │
+                                              │  │                      │                                     │
+  ┌─────────────────────────────────────┐     │  │                      │                                     │
+  │class CMDOptionGain : CMDOption      ├─────┘  │                      │                                     │
+  ├─────────────────────────────────────┤        │                      │                                     │                 ┌──────────────────────────────┐
+  │                                     │        │                      │                                     │◄────────────────┤class Wav                     │
+  └─────────────────────────────────────┘        │                      │                                     │                 ├──────────────────────────────┤
+                                                 │                      └─────────────────────────────────────┘                 │Signal WavSignal;             │
+                                                 │                                               ▲                              │int BitsPerSample;            │
+                                                 │                                               │                              │                              │
+                                                 │                                               │                              │new(Stream stream)            │
+                                                 │                                               │                              │                              │
+               ┌─────────────────────────────────┴─────────┐    ┌────────────────────────────────┴──────────────────┐           │void WriteFile(Stream stream) │
+               │abstract class Windowing                   │    │class CMDOptionParser                              │           └──────────────────────────────┘
+               ├───────────────────────────────────────────┤    ├───────────────────────────────────────────────────┤
+               │abstract void StartProcessing(Signal)      │    │new(CMDOption[] availableOpts, string programDesc) │
+               │abstract Signal NextWindow()               │    │                                                   │
+               │abstract void PutBack(Signal window)       │    │void PrintHelp()                                   │
+               │abstract Signal FinishProcessing()         │    │List<CMDParsedOption> Parse(string[])              │
+               └───────────┬──────────────────────────┬────┘    └───────────────────────────────────────────────────┘
+                           │                          │
+                           │                          │
+               ┌───────────┴─────────────────────┐    │                        ┌───────────────────────┐
+               │class RectWindowing : Windowing  │    │                        │struct CMDParsedOption │
+               ├─────────────────────────────────┤    │                        ├───────────────────────┤
+               │new (int winLen)                 │    │                        │CMDOption Opt;         │
+               └─────────────────────────────────┘    │                        │string[] Args;         │
+                                                      │                        └───────────────────────┘
+                                                      │
+                          ┌───────────────────────────┴─────┐
+┌────────────────────┐    │class HannWindowing : Windowing  │
+│enum WindowingState │    ├─────────────────────────────────┤
+└────────────────────┘    │new(int winLen)                  │
+                          └─────────────────────────────────┘

@@ -130,4 +130,4 @@ Další možností je použít některý z předpřipravených souborů ve slož
 
 ## Programátorská dokumentace
 
-Viz soubor `programmer.pdf`.
+Viz soubor `docs/programmer.pdf`.
