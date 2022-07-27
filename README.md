@@ -131,3 +131,11 @@ Další možností je použít některý z předpřipravených souborů ve slož
 ## Programátorská dokumentace
 
 Viz soubor `docs/programmer.pdf`.
+
+## Testovací soubory
+
+Ve složce `testfiles` jsou připravené zvukové soubory, na kterých program může
+být ozkoušen. Soubory pocházejí původně z
+[https://soundbible.com](https://soundbible.com). Jsou zkonvertované na 8bit
+mono pcm. Ty s příponami '-lowpass', '-highpass' a '-loud' jsou upravené pomocí
+ffteq.
