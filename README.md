@@ -22,6 +22,11 @@ high-pass filter (filtruje nízké frekvence) a upravit hlasitost souboru.
 Uživatel si na příkazové řádce navolí, které efekty a v jakém pořadí na soubor
 aplikovat.
 
+Účelem programu není poměřovat se s již existujícími filtry. Ty jsou vesměs
+mocnější a uživatelsky přívětivější než tento. Účel programu je vzdělávací. Já
+si vyzkoušel jednoduché zpracovávání zvuku a snad program bude i v budoucnu
+užitečný někomu, kdo se bude chtít dozvědět, jak napsat frekvenční filtr.
+
 ### Jak to spustit
 
 Program lze spustit na Windows a Linux x86\_64 strojích.
@@ -30,7 +35,7 @@ Program lze spustit na Windows a Linux x86\_64 strojích.
 
 Připravte si 8bit 44,1kHz mono Wave soubor. Stáhněte si win-64 release.
 Otevřete v kořenové složce terminál. Zadejte následující příkaz (pozor! pokud
-výstupní soubor už existuje, program ho přemaže).
+výstupní soubor už existuje, program ho přepíše).
 
 ```
 ffteq <vstupní soubor>.wav <výstupní soubor>.wav gain 0
@@ -53,7 +58,7 @@ výstupnímu souboru. Následuje seznam options oddělených mezerami. Každá o
 odpovídá aplikaci jednoho efektu. Options se mohou v seznamu opakovat. Jsou
 aplikovány v tom pořadí, v jakém jsou zadány v terminálu.
 
-Každá option má formu `<název option> <argument1> <argument2> ...`.
+Každá option má formu `<název-option> <parametr1> <parametr2> ...`.
 
 #### filterlo - Low-pass filter
 
@@ -61,8 +66,8 @@ Každá option má formu `<název option> <argument1> <argument2> ...`.
 filterlo <hz-from> <hz-to>
 ```
 
-\<hz-from\> a \<hz-to\> jsou desetinná čísla. Zcela odfiltruje frekvence vyšší
-než \<hz-to\>. Aby úprava nebyla tak agresivní, začíná filtrovat už na
+\<hz-from\> a \<hz-to\> jsou desetinná čísla. Zcela odfiltruje frekvence
+vyšší než \<hz-to\>. Aby úprava nebyla tak agresivní, začíná filtrovat už na
 frekvenci \<hz-from\> a se zvyšující se frekvencí lineárně snižuje koeficient,
 kterým násobí vstupní frekvence, až se dostane na nulu v \<hz-to\>.
 
@@ -83,7 +88,7 @@ vyšší než 2500hz.
 filterhi <hz-from> <hz-to>
 ```
 
-Obdobný jako low-pass filter. Zcela odfiltruje frekvence **nižší než
+Podobný jako low-pass filter. Zcela odfiltruje frekvence **nižší než
 \<hz-from\>**.
 
 ![high-cz.png](docs/high-cz.png)

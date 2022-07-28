@@ -17,23 +17,15 @@ namespace ffteq
 
     class CMDOptionParser
     {
-        private const int LINE_WIDTH = 80;
-
         private CMDOption[] availableOpts;
         private string programDesc;
 
-        public CMDOptionParser(CMDOption[] availableOpts, string programDesc)
-        {
-            this.availableOpts = availableOpts;
-            this.programDesc = programDesc;
-        }
-
-        public void PrintOptions()
+        private void PrintOptions()
         {
             foreach (CMDOption o in availableOpts)
             {
                 Console.Write(o.Name);
-                foreach (CMDOptionArg a in o.Args)
+                foreach (CMDOptionParam a in o.Params)
                 {
                     Console.Write(' ');
                     Console.Write(a.Name);
@@ -47,6 +39,19 @@ namespace ffteq
             }
         }
 
+        private static void PrintParamHelp(CMDOption o, CMDOptionParam p)
+        {
+            Console.WriteLine("Option: {0}", o.Name);
+            Console.WriteLine("Param: {0}", p.Name);
+            Console.WriteLine(p.Description);
+        }
+
+        public CMDOptionParser(CMDOption[] availableOpts, string programDesc)
+        {
+            this.availableOpts = availableOpts;
+            this.programDesc = programDesc;
+        }
+
         public void PrintHelp()
         {
             Console.WriteLine(programDesc);
@@ -54,20 +59,13 @@ namespace ffteq
             PrintOptions();
         }
 
-        public static void PrintArgHelp(CMDOption o, CMDOptionArg a)
-        {
-            Console.WriteLine("Option: {0}", o.Name);
-            Console.WriteLine("Arg: {0}", a.Name);
-            Console.WriteLine(a.Description);
-        }
-
-        public List<CMDParsedOption> Parse(string[] strs)
+        public List<CMDParsedOption> Parse(string[] args)
         {
             List<CMDParsedOption> parsed = new List<CMDParsedOption>();
 
-            for (int i = 0; i < strs.Length; i++)
+            for (int i = 0; i < args.Length; i++)
             {
-                string s = strs[i];
+                string s = args[i];
                 bool wrongOpt = true;
                 foreach (CMDOption o in availableOpts)
                 {
@@ -76,32 +74,32 @@ namespace ffteq
                         wrongOpt = false;
 
                         // Prepare array of args of this option
-                        if (i + o.ArgNum >= strs.Length)
+                        if (i + o.ParamNum >= args.Length)
                         {
                             throw new ApplicationException(String.Format(
                                 "Not enough arguments for option {0}",
                                 o.Name
                             ));
                         }
-                        string[] argStrs = new string[o.ArgNum];
-                        Array.Copy(strs, i + 1, argStrs, 0, o.ArgNum);
+                        string[] oArgs = new string[o.ParamNum];
+                        Array.Copy(args, i + 1, oArgs, 0, o.ParamNum);
 
                         // Validate args
-                        for (int j = 0; j < o.ArgNum; j++)
+                        for (int j = 0; j < o.ParamNum; j++)
                         {
-                            if (!o.Args[j].Validate(argStrs[j]))
+                            if (!o.Params[j].Validate(oArgs[j]))
                             {
-                                PrintArgHelp(o, o.Args[j]);
+                                PrintParamHelp(o, o.Params[j]);
                                 throw new ApplicationException(
                                     "Invalid argument"
                                 );
                             }
                         }
 
-                        parsed.Add(new CMDParsedOption(o, argStrs));
+                        parsed.Add(new CMDParsedOption(o, oArgs));
 
                         // Skip args of this option
-                        i += o.ArgNum;
+                        i += o.ParamNum;
 
                         break;
                     }

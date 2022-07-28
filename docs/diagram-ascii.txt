@@ -1,13 +1,13 @@
-         +-------------------------------------+
-         |class CMDOptionDouble : CMDOptionArg |                          +----------------------------------------------+        +-----------------------------------+
-         +-------------------------------------+                          |class FFTFilter : Effect                      |        |class FFT                          |
-         |new(string name, string description) |                          +----------------------------------------------+        +-----------------------------------+
-         +-----------------------+-------------+                          |new(bool lowPass, double hzFrom, double hzTo) |        |static Complex[] DoFFT(Complex[])  |
+         +--------------------------------------------+
+         |class CMDOptionParamDouble : CMDOptionParam |                   +----------------------------------------------+        +-----------------------------------+
+         +--------------------------------------------+                   |class FFTFilter : Effect                      |        |class FFT                          |
+         |new(string name, string description)        |                   +----------------------------------------------+        +-----------------------------------+
+         +-----------------------+--------------------+                   |new(bool lowPass, double hzFrom, double hzTo) |        |static Complex[] DoFFT(Complex[])  |
                                  |                                        +---------------------------+------------------+        |static Complex[] DoIFFT(Complex[]) |
                                  |                                                                    |                           +-----------------------------------+
                                  |                                        +--------------------+      |
                +-----------------+-------------+                          |class Gain : Effect |      |
-               |abstract class CMDOptionArg    |                          +--------------------+      |
+               |abstract class CMDOptionParam  |                          +--------------------+      |
                +-------------------------------+                          |new(double db)      |      |
                |abstract string Name;          |                          +-------------+------+      |
                |abstract string Description;   |                                        |             |
@@ -24,7 +24,7 @@
      +-----------------------------------------------+
      |abstract string Name;                          |
      |abstract string Description;                   |                                                                          +----------------------------------------------+
-     |abstract CMDOptionArg[] Args;                  +-----------------------+                                                  |class Signal                                  |
+     |abstract CMDOptionParam[] Params;              +-----------------------+                                                  |class Signal                                  |
      |                                               |                       |                                                  +----------------------------------------------+
      |abstract Signal Execute(Signal, string[] args) |                       |                                                  |double[] Data;                                |
      +----------------------------------------+------+                       |                                                  |double this[int];                             |

@@ -28,18 +28,18 @@ will a be a linear slope between these two values.";
                 return DESCRIPTION;
             }
         }
-        private CMDOptionArg[] args = new CMDOptionArg[] {
-            new CMDOptionArgDouble("hz-from",
+        private CMDOptionParam[] params_ = new CMDOptionParam[] {
+            new CMDOptionParamDouble("hz-from",
                     "Decimal number. Hz where slope starts."),
-            new CMDOptionArgDouble("hz-to",
+            new CMDOptionParamDouble("hz-to",
                     "Decimal number. Hz where slope ends.")
         };
-        public override CMDOptionArg[] Args { get { return args; } }
+        public override CMDOptionParam[] Params { get { return params_; } }
 
-        public override Signal Execute(Signal inSignal, string[] argStrs)
+        public override Signal Execute(Signal inSignal, string[] args)
         {
-            double hzFrom = Double.Parse(argStrs[0]);
-            double hzTo = Double.Parse(argStrs[1]);
+            double hzFrom = Double.Parse(args[0]);
+            double hzTo = Double.Parse(args[1]);
 
             Windowing windowing = new HannWindowing(WINDOW_SIZE);
             Effect filter = new FFTFilter(true, hzFrom, hzTo);
@@ -71,18 +71,18 @@ there will a be a linear slope between these two values.";
                 return DESCRIPTION;
             }
         }
-        private CMDOptionArg[] args = new CMDOptionArg[] {
-            new CMDOptionArgDouble("hz-from",
+        private CMDOptionParam[] params_ = new CMDOptionParam[] {
+            new CMDOptionParamDouble("hz-from",
                     "Decimal number. Hz where slope starts."),
-            new CMDOptionArgDouble("hz-to",
+            new CMDOptionParamDouble("hz-to",
                     "Decimal Number. Hz where slope ends.")
         };
-        public override CMDOptionArg[] Args { get { return args; } }
+        public override CMDOptionParam[] Params { get { return params_; } }
 
-        public override Signal Execute(Signal inSignal, string[] argStrs)
+        public override Signal Execute(Signal inSignal, string[] args)
         {
-            double hzFrom = Double.Parse(argStrs[0]);
-            double hzTo = Double.Parse(argStrs[1]);
+            double hzFrom = Double.Parse(args[0]);
+            double hzTo = Double.Parse(args[1]);
 
             Windowing windowing = new HannWindowing(WINDOW_SIZE);
             Effect filter = new FFTFilter(false, hzFrom, hzTo);
@@ -108,14 +108,14 @@ there will a be a linear slope between these two values.";
                 return "Manipulate volume of the whole file.";
             }
         }
-        private CMDOptionArg[] args = new CMDOptionArg[] {
-            new CMDOptionArgDouble("db", "Decimal number. Ammount of gain.")
+        private CMDOptionParam[] params_ = new CMDOptionParam[] {
+            new CMDOptionParamDouble("db", "Decimal number. Ammount of gain.")
         };
-        public override CMDOptionArg[] Args { get { return args; } }
+        public override CMDOptionParam[] Params { get { return params_; } }
 
-        public override Signal Execute(Signal inSignal, string[] argStrs)
+        public override Signal Execute(Signal inSignal, string[] args)
         {
-            double db = Double.Parse(argStrs[0]);
+            double db = Double.Parse(args[0]);
             Effect gain = new Gain(db);
             return gain.Process(inSignal);
         }
@@ -158,6 +158,7 @@ Options are applied in the order they apper on command line";
             string inPath = args[0];
             string outPath = args[1];
 
+            // Pass array of options and their arguments to option parser
             string[] foo = new string[args.Length - 2];
             Array.Copy(args, 2, foo, 0, args.Length - 2);
             List<CMDParsedOption> parsedOpts = null;
@@ -216,12 +217,12 @@ Options are applied in the order they apper on command line";
             for (int i = 0; i < parsedOpts.Count; i++)
             {
                 CMDOption o = parsedOpts[i].Opt;
-                string[] strArgs = parsedOpts[i].Args;
+                string[] oArgs = parsedOpts[i].Args;
 
                 Console.WriteLine("Applying option {0}...", o.Name);
                 try
                 {
-                    signal = o.Execute(signal, strArgs);
+                    signal = o.Execute(signal, oArgs);
                 }
                 catch (ApplicationException e)
                 {

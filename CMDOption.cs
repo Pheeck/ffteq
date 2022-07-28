@@ -2,7 +2,7 @@ using System;
 
 namespace ffteq
 {
-    abstract class CMDOptionArg
+    abstract class CMDOptionParam
     {
         abstract public string Name { get; }
         abstract public string Description { get; }
@@ -13,7 +13,7 @@ namespace ffteq
         abstract public bool Validate(String s);
     }
 
-    class CMDOptionArgDouble : CMDOptionArg
+    class CMDOptionParamDouble : CMDOptionParam
     {
         public double Value { private set; get; }
         private string name;
@@ -21,7 +21,7 @@ namespace ffteq
         public override string Name { get { return name; } }
         public override string Description { get { return description; } }
 
-        public CMDOptionArgDouble(string name, string description)
+        public CMDOptionParamDouble(string name, string description)
         {
             this.name = name;
             this.description = description;
@@ -38,13 +38,13 @@ namespace ffteq
     {
         abstract public string Name { get; }
         abstract public string Description { get; }
-        abstract public CMDOptionArg[] Args { get; }
-        public int ArgNum { get { return Args.Length; } }
+        abstract public CMDOptionParam[] Params { get; }
+        public int ParamNum { get { return Params.Length; } }
 
         /// <summary>
         /// Shall return signal with the same number of samples and sample
         /// rate. The signal should be processed by an effect.
         /// </summary>
-        abstract public Signal Execute(Signal inSignal, string[] argStrs);
+        abstract public Signal Execute(Signal inSignal, string[] args);
     }
 }
